@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<!-- 
+	Author: Ling Hong Ren
+	Created on: 8/31/2016
+	Description: Display a week in HTML, allow selection of one or many days.
+				Let the user select a start date and end date.
+				Have a checkbox that forces the end date to end at the end of the month.
+				Display all of the dates that are selected from the displayed week,
+				within and including the start and end date.
+-->
+<html>
+<head>
+	<title>Calendar</title>
+	<link rel = "stylesheet" type = "text/css" href ="select_days.css">
+	
+	<script type = "text/javascript" >
+		function selectWeekDay (tablecell){
+			if (tablecell.style.color == "black"){
+				<!-- when selected, letter's color will turn red -->
+				tablecell.style.color = "red";
+			}
+			else{
+				tablecell.style.color = "black";
+			}
+		}
+		
+		<!-- check selected weekdays -->
+		function weekdayPattern(){
+			var weekdays = [];
+			if (mo.style.color == "red"){
+				weekdays.push(1);
+			}
+			if (tu.style.color == "red"){
+				weekdays.push(2);
+			}
+			if (we.style.color == "red"){
+				weekdays.push(3);
+			}
+			if (th.style.color == "red"){
+				weekdays.push(4);
+			}
+			if (fr.style.color == "red"){
+				weekdays.push(5);
+			}
+			if (sa.style.color == "red"){
+				weekdays.push(6);
+			}
+			if (su.style.color == "red"){
+				weekdays.push(0);
+			}
+			
+			if (weekdays == ""){
+				document.getElementById("error0").innerHTML = "Please select a weekday pattern";
+			}
+			else{
+				document.getElementById("error0").innerHTML = "";
+			}
+			
+			return weekdays;
+		}
+		
+		<!-- check start date and end date -->
+		function selectDay(){
+			document.getElementById("result").innerHTML = "";
+			var check = new Boolean ('true');
+			var startdate = new Date (startyear.value, startmonth.value-1, startday.value);			
+			var now = new Date();
+			<!-- last day of the month-->
+			var enddate = new Date (endyear.value, endmonth.value-1, endday.value);
+			if (document.getElementById("enddate").checked){
+				enddate = new Date (startyear.value, startmonth.value, 0);
+			}
+
+			if (startdate < now){
+				document.getElementById("error1").innerHTML = "Start date should be a future date";
+				check = false;
+			}
+			else if (enddate < startdate){
+				document.getElementById("error1").innerHTML = "End date should be greater than start date";
+				check = false;
+			}
+			else{
+				document.getElementById("error1").innerHTML = "";
+			}
+
+			<!-- get weekday pattern-->
+			var weekdays = weekdayPattern();
+			if (weekdays.length ==0){
+				check = false;
+			}
+			
+			if (!check){
+				return;
+			}
+			
+			<!--save all the days >= startdate && <= enddate in timePeriods -->
+  			var timePeriods = [];
+			var temp = new Date();
+			temp.setTime(startdate.getTime());
+			for (var i = 0; temp.getTime() <= enddate.getTime(); i++){
+				temp.setDate(startdate.getDate()+i);
+				var temp2 = new Date();
+				temp2.setTime(temp.getTime());
+				timePeriods.push(temp2);
+			}
+						
+			<!-- save all the dates that match selected weekdays in an array-->
+			var patterns =[];
+			var count = 0;
+			for (count; count < 7 && count < timePeriods.length; count ++){
+				for (var i=0; i < weekdays.length; i++){
+					if (weekdays[i] == timePeriods[count].getDay()){
+						var pattern =[];
+						for (var j = count; j < timePeriods.length; j+=7){
+							pattern.push(timePeriods[j]);
+						}
+						patterns.push(pattern);
+						break;
+					}
+				}
+			}
+
+			document.getElementById("result").innerHTML = patterns.join('<br/>');
+			
+		}
+		
+	</script>
+</head>
+
+<body>
+	<h2>Select Weekdays</h2>
+	<table id = "week">
+		<tr>
+			<td id = "mo" onClick ="selectWeekDay(this)">Monday</td>
+			<td id = "tu" onClick ="selectWeekDay(this)">Tuesday</td>
+			<td id = "we" onClick ="selectWeekDay(this)">Wednesday</td>
+			<td id = "th" onClick ="selectWeekDay(this)">Thusday</td>
+			<td id = "fr" onClick ="selectWeekDay(this)">Friday</td>
+			<td id = "sa" onClick ="selectWeekDay(this)">Saturday</td>
+			<td id = "su" onClick ="selectWeekDay(this)">Sunday</td>
+		</tr>
+	</table>
+	
+	<h2>Select A Start Day</h2>
+	<!-- start month dropdown -->
+	<select name = "startmonth" id = "startmonth" size = "1">
+		<option value="01">January</option>
+		<option value="02">February</option>
+		<option value="03">March</option>
+		<option value="04">April</option>
+		<option value="05">May</option>
+		<option value="06">June</option>
+		<option value="07">July</option>
+		<option value="08">August</option>
+		<option value="09">September</option>
+		<option value="10">October</option>
+		<option value="11">November</option>
+		<option value="12">December</option>
+	</select>
+
+	<!-- start day dropdown -->
+	<select name = "startday" id = "startday" onchange = "" size = "1">
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+	</select>
+
+	<!-- start year dropdown -->
+	<select name = "startyear" id = "startyear">
+		<option value = "2016">2016</option>
+	</select>
+	
+	<h2>Select An End Day</h2>
+	<p>End of the month: <input type = "checkbox" id = "enddate"></p>
+	
+	<!-- end month dropdown -->
+	<select name = "endmonth" id = "endmonth" size = "1">
+		<option value="01">January</option>
+		<option value="02">February</option>
+		<option value="03">March</option>
+		<option value="04">April</option>
+		<option value="05">May</option>
+		<option value="06">June</option>
+		<option value="07">July</option>
+		<option value="08">August</option>
+		<option value="09">September</option>
+		<option value="10">October</option>
+		<option value="11">November</option>
+		<option value="12">December</option>
+	</select>
+
+	<!-- end day dropdown -->
+	<select name = "endday" id = "endday" onchange = "" size = "1">
+		<option value="01">01</option>
+		<option value="02">02</option>
+		<option value="03">03</option>
+		<option value="04">04</option>
+		<option value="05">05</option>
+		<option value="06">06</option>
+		<option value="07">07</option>
+		<option value="08">08</option>
+		<option value="09">09</option>
+		<option value="10">10</option>
+		<option value="11">11</option>
+		<option value="12">12</option>
+		<option value="13">13</option>
+		<option value="14">14</option>
+		<option value="15">15</option>
+		<option value="16">16</option>
+		<option value="17">17</option>
+		<option value="18">18</option>
+		<option value="19">19</option>
+		<option value="20">20</option>
+		<option value="21">21</option>
+		<option value="22">22</option>
+		<option value="23">23</option>
+		<option value="24">24</option>
+		<option value="25">25</option>
+		<option value="26">26</option>
+		<option value="27">27</option>
+		<option value="28">28</option>
+		<option value="29">29</option>
+		<option value="30">30</option>
+		<option value="31">31</option>
+	</select>
+
+	<!-- end year dropdow -->
+	<select name = "endyear" id = "endyear">
+		<option value = "2016">2016</option>
+	</select>
+	
+	<br><br>
+	<button onClick = "selectDay()">Submit</button>
+	<p id = "error0"></p>
+	<p id = "error1"></p>
+	<p id = "result"></p>
+	
+</body>
+
+</html>
